@@ -1,0 +1,34 @@
+<mujoco model="big_hex_module">
+  <compiler angle="degree" coordinate="local" inertiafromgeom="true"/>
+  <option integrator="RK4" timestep="0.01" gravity="0 0 0"/>
+
+  <worldbody>
+    <light diffuse=".5 .5 .5" pos="0 0 5" dir="0 0 -1"/>
+
+    <!-- BIG Hexagonal Hallway (Doubled the spacing) -->
+    <!-- Size 5 is length, Size 2 is the width of each wall panel -->
+    <geom name="wall_bottom" type="box" size="5 2 0.05" pos="0 0 -3.46" euler="0 0 0" rgba="0.8 0.8 0.8 1"/>
+    <geom name="wall_top"    type="box" size="5 2 0.05" pos="0 0 3.46"  euler="180 0 0" rgba="0.8 0.8 0.8 1"/>
+    
+    <geom name="wall_br"     type="box" size="5 2 0.05" pos="0 3.0 -1.73"  euler="60 0 0" rgba="0.7 0.7 0.7 1"/>
+    <geom name="wall_tr"     type="box" size="5 2 0.05" pos="0 3.0 1.73"   euler="120 0 0" rgba="0.7 0.7 0.7 1"/>
+    
+    <geom name="wall_bl"     type="box" size="5 2 0.05" pos="0 -3.0 -1.73" euler="-60 0 0" rgba="0.7 0.7 0.7 1"/>
+    <geom name="wall_tl"     type="box" size="5 2 0.05" pos="0 -3.0 1.73"  euler="-120 0 0" rgba="0.7 0.7 0.7 1"/>
+
+    <body name="torso" pos="0 0 0">
+      <geom name="torso_geom" type="box" size="0.25 0.25 0.25" rgba="0.8 0.6 0.4 1"/>
+      <joint name="root" type="free" pos="0 0 0"/>
+      <site name="thruster_site" pos="0 0 0"/>
+    </body>
+
+    <site name="target_marker" type="sphere" size="0.1" rgba="1 0 0 0.3" pos="2 0 0"/>
+  </worldbody>
+
+  <actuator>
+    <general name="thrust_x" site="thruster_site" gear="1 0 0 0 0 0" ctrlrange="-10 10"/>
+    <general name="thrust_y" site="thruster_site" gear="0 1 0 0 0 0" ctrlrange="-10 10"/>
+    <general name="thrust_z" site="thruster_site" gear="0 0 1 0 0 0" ctrlrange="-10 10"/>
+    <general name="torque_x" site="thruster_site" gear="0 0 0 1 0 0" ctrlrange="-5 5"/>
+  </actuator>
+</mujoco>
