@@ -5,7 +5,7 @@ from gymnasium import spaces
 import collections
 
 class ZeroGAnt(AntEnv):
-    def __init__(self, **kwargs):
+    def __init__(self, use_noise=True, use_missing=True, use_delays=True, **kwargs):
         # Random goal initialize
         self.random_goals = False
 
@@ -17,9 +17,9 @@ class ZeroGAnt(AntEnv):
         self.goal_range = 3.0
         
         # Partial Observability Flags
-        self.use_noise = True
-        self.use_missing = True
-        self.use_delays = True
+        self.use_noise = use_noise
+        self.use_missing = use_missing
+        self.use_delays = use_delays
 
         self.noise_std = 0.01
         self.missing_prob = 0.05
@@ -35,7 +35,7 @@ class ZeroGAnt(AntEnv):
         self.current_step = 0
 
         super().__init__(
-            xml_file="C:/Users/selly/2026/School/zero_g_rl_project/custom_ant.xml",
+            xml_file="C:/Users/selly/2026/School/Zero-Gravity-RL-Project/zero-g-rl-project/custom_ant.xml",
             terminate_when_unhealthy=False,
             **kwargs
         )
@@ -127,22 +127,20 @@ class ZeroGAnt(AntEnv):
 
         # --- 6. TERMINATION / TRUNCATION ---
         # We terminate if the ACTUAL cube gets within a threshold
-        terminated = bool(curr_dist < 0.05 and curr_ori_dist < 0.05)
+        terminated = bool(curr_dist < 0.50 and curr_ori_dist < 0.50)
         truncated = self.current_step >= self.max_steps
 
         if self.render_mode == "human":
             self.render()
 
-        return obs, reward, terminated, truncated, {"is_success": terminated, "final_pos_error": curr_dist if {terminated or truncated} else None}
+        return obs, reward, terminated, truncated, {"is_success": terminated, "final_pos_error": curr_dist if (terminated or truncated) else None}
 
     def reset_model(self):
         self.current_step = 0
+        self.obs_buffer.clear()
 
         # Randomize target if flag is True
         if self.random_goals:
-
-            low_bounds = np.array([-4.0, -1.2, -1.2])
-            high_bound = np.array([4.0, 1.2, 1.2])
             
             self.target_pos = self.np_random.uniform(
                 low=-self.goal_range,
