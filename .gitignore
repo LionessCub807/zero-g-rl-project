@@ -1,0 +1,3 @@
+# Ignore generated Stable Baselines model files
+ppo_*.zip
+sac_*.zip
