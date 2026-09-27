@@ -5,8 +5,8 @@ from stable_baselines3.common.vec_env import SubprocVecEnv, VecMonitor
 from stable_baselines3.common.callbacks import BaseCallback
 
 full_obs_config = dict( 
-        use_noise=False, 
-        use_missing=False, 
+        use_noise=True, 
+        use_missing=True, 
         use_delays=False
     )
 
@@ -59,8 +59,8 @@ if __name__ == "__main__":
 
     policy_kwargs = dict(net_arch=[256, 256])
 
-    algorithms = { "PPO": PPO }
-    #algorithms = { "SAC": SAC }
+    #algorithms = { "PPO": PPO }
+    algorithms = { "SAC": SAC }
 
     results = {}
 
@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
             model.learn(total_timesteps=total_timesteps, callback=FinalPosErrorCallback(), tb_log_name=f"{algo_name}_seed_{seed}")
 
-            model.save(f"{algo_name.lower()}_zero_g_cube_seed_{seed}")
+            model.save(f"{algo_name.lower()}_zero_g_cube_seed_{seed}_noise_missing")
 
             success_rate = evaluate_model(model, num_episodes=100)
             results[algo_name].append(success_rate)
